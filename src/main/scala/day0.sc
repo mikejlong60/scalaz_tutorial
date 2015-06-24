@@ -15,24 +15,43 @@ object IntMonoid extends Monoid[Int] {
   def mzero: Int = 0
 }
 
+object StringMonoid extends Monoid[String] {
+  def mappend(a: String, b: String): String = a + b
+  def mzero: String = ""
+}
+
 def sumM1(xs: List[Int]): Int = xs.foldLeft(IntMonoid.mzero)(IntMonoid.mappend)
 
 sumM1(List(1,2,3,4,5))
 
 
-def sumM2(xs: List[Int], m: Monoid[Int]): Int = xs.foldLeft(m.mzero)(m.mappend)
+def sumM2(xs: List[Int], m: Monoid[Int]): Int =
+  xs.foldLeft(m.mzero)(m.mappend)
 
 sumM2(List(1,2,3,4,500), IntMonoid)
 
-def sumM3[A](xs: List[A], m: Monoid[A]): A = xs.foldLeft(m.mzero)(m.mappend)
+def sumM3[A](xs: List[A], m: Monoid[A]): A =
+  xs.foldLeft(m.mzero)(m.mappend)
 
 sumM3(List(1,2,3,4,500), IntMonoid)
 
-implicit val intMonoid = IntMonoid
+def sumM4[A](xs: List[A])(m: Monoid[A]): A =
+  xs.foldLeft(m.mzero)(m.mappend)
 
-def sumM4[A](xs: List[A])(implicit m: Monoid[A]): A = xs.foldLeft(m.mzero)(m.mappend)
+sumM4(List(1,2,3,4,500))(IntMonoid)
 
-sumM4(List(1,2,3,4,500))
+sumM4(List("1","2","3","4","500"))(StringMonoid)
+
+sumM4(List())(IntMonoid)
+
+
+
+
+
+
+
+
+
 
 
 
