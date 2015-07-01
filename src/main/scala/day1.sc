@@ -138,3 +138,4 @@ implicit val booleanCanTruthy: CanTruthy[Boolean] = CanTruthy.truthys(identity)
 true.truthy
 false.truthy
 
+
