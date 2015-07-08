@@ -1,4 +1,7 @@
-import scalaz.Functor
+//import scalaz.Alpha.A
+
+import scalaz.Alpha.A
+import scalaz.{Applicative, Apply, Tags, Functor}
 import scalaz.syntax.Ops
 import scalaz.Scalaz._
 
@@ -63,6 +66,7 @@ applicFunctor map {_ (9)}
 //and a functor and applies the function inside the functor value, <*> takes a
 //functor that has a function in it and another functor and extracts that function
 //from the first functor and then maps it over the second one.
+//Option as Apply.  You can use <*> on option.
 
 9.some <*> {(_: Int) + 3}.some
 
@@ -75,19 +79,64 @@ none *> 3.some
 
 9.some *> 3.some
 
-9.some *> {(_: Int) + 3}.some
+9.some <* {(_: Int) + 4}.some
+
+
+//Scalaz 7 has a new notation that extracts values from containers and applies them
+//to a single function.
+val y = ^(3.some, 5.some) {_ + _}
+
+val y1 = ^(3.some, none[Int]) {_ + _}
+
+
+//Lists as Apply. You can use <*> and |@| on lists.
+val z1 = List(1,2,3) <*> List((_: Int) * 0, (_: Int) + 100, (x: Int) => x * x)
+
+val z2 = List(3,4) <*> {List(1,2) <*> List({(_: Int) + (_: Int)}.curried, {(_: Int) * (_: Int)}.curried)}
+
+val z3 = (List("ha", "heh", "hmm") |@| List("?", "!", ".")) {_ + _}
+
+val z4 = (List(1, 2, 3) |@| List(100, 200, 300)) {_ + _}
+
+///Zip lists -- In Haskell [(+3),(*2)] <*> [1,2] works in such a way that
+//the first function in the left list gets applied to the first value in the
+//right one, the second function gets applied to the second value and so on.
+//That would result in a list with two values, namely [4,4]. Look at is as
+//[1 + 3, 2 * 2]
+
+//You can't do this easily in Scalaz.
+
+val a1 = streamZipApplicative.ap(Tags.Zip(Stream(1,2))) (Tags.Zip(Stream({(_: Int) + 3}, {(_: Int) * 2})))
 
 
 
 
+//Control.applicative has a function called liftA2 which has a type of
+//liftA2 :: (Applicative f) => (a -> b -> c) -> f a -> f b -> f c
+
+val b1 = Apply[Option].lift2((_: Int) :: (_: List[Int]))
+
+b1(3.some, List(4).some)
+
+//Here we implement a function that takes a list of applicatives and returns
+//an applicative that has a list as its result value.
+
+def sequenceA[F[_]: Applicative, A](li: List[F[A]]): F[List[A]] = li match {
+  case Nil => (Nil: List[A]).point[F]
+  case x :: xs => (x |@| sequenceA(xs)) {_ :: _}
+}
+
+sequenceA(List(1.some, 2.some))
+
+sequenceA(List(3.some, none, 1.some))
+
+sequenceA(List(List(1,2,3), List(4,5,6)))
+
+//For Function1 with Int fixed we have to do something wierd which I do not yet understand.
+type Function1Int[A] = ({type l[A]=Function1[Int, A]})#l[A]
+
+val c2 = sequenceA(List((_: Int) + 3, (_: Int) + 2, (_: Int) + 1): List[Function1Int[Int]])
 
 
-
-
-
-
-
-
-
-
+c2(3)
 
