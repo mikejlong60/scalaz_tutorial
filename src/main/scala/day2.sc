@@ -137,6 +137,7 @@ type Function1Int[A] = ({type l[A]=Function1[Int, A]})#l[A]
 
 val c2 = sequenceA(List((_: Int) + 3, (_: Int) + 2, (_: Int) + 1): List[Function1Int[Int]])
 
+c2(2)
 
-c2(3)
+
 
