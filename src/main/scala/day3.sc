@@ -49,5 +49,30 @@ f3(Some(3))
 
 f3(None)
 
+/////////////////////////////////////////////////////////////////////////////
+//    MONOIDS
+// * together with 1 and ++ together with [] share some commons properties.
+// The function takes two parameters and the parameters and the return value
+// have the same type. There exists such a value that doesn't change other
+// values when used with the binary function.
+////////////////////////////////////////////////////////////////////////////
+4 * 1
 
+List(1,2,3) ++ Nil
+
+///////////////////////////////////////////////////////////////////////////
+// It doesn't matter if we do (3 * 4) * 5 or 3 8 (4 * 5). Either way the
+// result is 60. The same goes for ++. This property is called associativity.
+//* and ++ are associative. But - is not.
+//
+// A monoid is when you have an associative binary function and a value
+// which acts as an identity with respect to that function.
+// Monoids have a function called:
+//  def zero: A
+// and
+//  def append(a1: A, a2: => A): A
+//
+// a2: => A means a2 is lazy, a called-by-name parameter that is not evaluated
+// until it is actually needed.  All parameters in Haskell are like this
+// but you have to make it explicit in Scala.
 
