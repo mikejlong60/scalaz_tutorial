@@ -145,5 +145,35 @@ for {
 //MonadPlus and the guard function.   Scala's for notation allows filtering.
 //The MonadPlus typeclass is for monads that can also act like monoids.
 for {
-  x <- 1 |-> 50 if x.shows contains '7'
+  x <- 1 to 50 if x.shows contains '7'
 } yield x
+
+
+//A knight's quest. A problem that lends itself to being solved with non-determinism
+//is trying to find out if a single night on a chessboard can reach a certain position
+//in three moves.
+case class KnightPos(c: Int, r: Int) {
+  def move: List[KnightPos] =
+    for {
+        KnightPos(c2, r2) <- List(KnightPos(c + 2, r - 1), KnightPos(c + 2, r + 1),
+          KnightPos(c - 2, r - 1), KnightPos(c - 2, r + 1),
+          KnightPos(c + 1, r - 2), KnightPos(c + 1, r + 2),
+          KnightPos(c - 1, r - 2), KnightPos(c - 1, r + 2)) if (
+      ((1 to 8) contains c2) && ((1 to 8) contains r2))
+    } yield KnightPos(c2, r2)
+
+  def in3: List[KnightPos] =
+    for {
+      first <- move
+      second <- first.move
+      third <- second.move
+    } yield third
+
+  def canReachIn3(end: KnightPos): Boolean = in3 contains end
+}
+
+KnightPos(6,2).move
+KnightPos(6, 2).in3
+KnightPos(6, 2) canReachIn3 KnightPos(6, 1)
+KnightPos(6, 2) canReachIn3 KnightPos(7, 3)
+
