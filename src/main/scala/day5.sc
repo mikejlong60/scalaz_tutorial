@@ -177,3 +177,27 @@ KnightPos(6, 2).in3
 KnightPos(6, 2) canReachIn3 KnightPos(6, 1)
 KnightPos(6, 2) canReachIn3 KnightPos(7, 3)
 
+//Monad Laws
+//Law 1 - Left Identity -- If you have a value that you put in a default context with return
+// and ten feed it to a function by using >>=, its the same as just taking the value
+// and applying the function to it.
+//
+// In Scala here is an example. Remember that in Scalaz point is the same as return
+// in Haskell.
+(Monad[Option].point(3) >>= { x => (x + 100000).some }) assert_=== 3 |> { x => (x + 100000).some}
+
+//Law 2 - Right Identity -- If you have a monadic value and we use >>= to feed it to return,
+//the result is the original monadic value.
+("move on up".some flatMap {Monad[Option].point(_)}) assert_=== "move on up".some
+
+
+//Law 3 - Associativity -- When you have a chain of monadic function applications
+//with >>=, it doesn't matter how they are nested.
+Monad[Option].point(Pole2(0,0)) >>= {_.landRight(2)} >>= {_.landLeft(2)} >>= {_.banana} >>= {_.landRight(2)}
+
+val xx = Monad[Option].point(Pole2(0,0)) >>= {x =>
+  x.landRight(2) >>= { y =>
+  //y.banana >>= {z =>
+  y.landLeft(2) >>= {z =>
+  z.landRight(2)
+  }}}
