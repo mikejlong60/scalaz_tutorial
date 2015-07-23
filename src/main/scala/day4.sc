@@ -62,7 +62,7 @@ implicit val coptionFunctor = new Functor[COption] {
 // Monoid Laws
 //    Monoid instances must satisfy Semigroup laws plus 2 additional
 //    laws: left identity and right identity. They are as follows:
-//      left --- forall a. append(zero, a) == a
+//      left --- forall a append(zero, a) == a
 //      right -- forall a append(a, zero) == a
 /////////////////////////////////////////////////////////////////////
 

@@ -9,7 +9,7 @@ import scalacheck.ScalaCheckBinding._
 
 /////////////////////////////////////////////////////////////////
 /////////////////  MONADS ///////////////////////////////////////
-// Monadsare a natural extionsion of applicative functors, and
+// Monads are a natural extension of applicative functors, and
 // they provide a solution to the following problem: If you
 // have a value a in some context (an Option, a Future, ...),
 // how do you apply it to a function that takes a normal a (Int)
@@ -28,7 +28,7 @@ import scalacheck.ScalaCheckBinding._
 Monad[Option].point("WHAT")
 
 
-//Walk the Line exampe with Pierre from LHAHFGG
+//Walk the Line example with Pierre from LHAHFGG
 type Birds = Int
 case class Pole(left: Birds, right: Birds) {
   def landLeft(n: Birds): Pole = copy(left = left + n)
@@ -59,7 +59,7 @@ Pole2(0,3).landLeft(10)
 //You can chain
 val p3 = Monad[Option].point(Pole2(0,0)) flatMap {_.landRight(2)} flatMap {_.landLeft(200)} flatMap {_.landRight(200)}
 
-//Or use the >>= operator
+//Or use the >>= operator(same as flatmap)
 val p4 = Monad[Option].point(Pole2(0,0)) >>= {_.landRight(2)} >>= {_.landLeft(200)} >>= {_.landRight(200)}
 
 // You can force an error by throwing a banana onto the wire.
@@ -67,11 +67,11 @@ val p5 = Monad[Option].point(Pole2(0,0)) >>= {_.landRight(2)} >>= {_.banana} >>=
 
 
 //Instead of making functions that ignore their input and just return a predetermined
-//monadic valus you can just use the >> function.
+//monadic value you can just use the >>=(flatmap) function.
 val p6 = Monad[Option].point(Pole2(0,0)).>>= {_.landRight(2)} >> (none: Option[Pole2]) >>= {_.landLeft(2)} >>= {_.landRight(2)}
 
 
-//Do notation - Monads are so useful that they get their own specia syntax called do notation.
+//Do notation - Monads are so useful that they get their own special syntax called do notation.
 //Scala has for syntax which does the same thing.  In a for expression every line that
 //isn't a let is a monadic value.
 for {
@@ -179,7 +179,7 @@ KnightPos(6, 2) canReachIn3 KnightPos(7, 3)
 
 //Monad Laws
 //Law 1 - Left Identity -- If you have a value that you put in a default context with return
-// and ten feed it to a function by using >>=, its the same as just taking the value
+// and then feed it to a function by using >>=, its the same as just taking the value
 // and applying the function to it.
 //
 // In Scala here is an example. Remember that in Scalaz point is the same as return
