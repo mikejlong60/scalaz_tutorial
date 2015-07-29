@@ -22,7 +22,7 @@ import scalaz.Scalaz._
 // constructor that takes type constructor(s): a higher-kinded type.
 
 //Every type (like Int) that you can make a value out of is called a proper type
-//and denoted with a symbol * (read "type").  This is analagous to Scala's type
+//and denoted with a symbol * (read "type").  This is analogous to Scala's type
 //variable notation and could be written as A.
 
 //A first-order value, or a value constructor like (_: Int) + 3 is normally

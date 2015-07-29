@@ -41,7 +41,7 @@ import Scalaz._
 3.show
 3.shows
 "hello".println
-123.310103851048515014750185710581740581085710857134058714058132.show
+123.310103851048515014750185710581740581085710857134058345714058132.show
 ///////////////////////////////////////////////////
 // Read is the opposite typeclass of Show. It takes a String
 // and returns a type that is a member of Read.

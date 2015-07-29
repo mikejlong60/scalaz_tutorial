@@ -62,7 +62,7 @@ applicFunctor map {_ (9)}
 //or
 1.point[List] map {_ + 2}
 
-//Think of Apply or <*> in Haskell as a beefed-up fmap. Whereas fmap takes a function
+//Think of Apply or <*> in Haskell as a beefed-up map. Whereas map takes a function
 //and a functor and applies the function inside the functor value, <*> takes a
 //functor that has a function in it and another functor and extracts that function
 //from the first functor and then maps it over the second one.

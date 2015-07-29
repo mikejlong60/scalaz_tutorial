@@ -201,3 +201,6 @@ val xx = Monad[Option].point(Pole2(0,0)) >>= {x =>
   y.landLeft(2) >>= {z =>
   z.landRight(2)
   }}}
+
+
+///BIG TAKEAWAY --- A Monad has flatMap(aliased as >>=).
