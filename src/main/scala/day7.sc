@@ -80,3 +80,41 @@ def stackManip3: State[Stack, Int] = for {
 } yield b
 
 stackManip3(List(5,8,2,1))
+
+// \/ -- This type is equivalent to Scala either.  It allows you
+//to have a context of possible failures and allows you to attach
+//values to such failures.  Convention dictates that Left is used
+//for failure and Right is used for success.  Its sort of like Option:
+//Left is None and Right is Some.
+
+1.right[String]
+
+"error".left[Int]
+
+//The Either type in Scala is not a monad because it does not implement
+//flatMap.  You have to call right to turn it into a RightProjection.
+//That is silly since the whole point of Either is to report
+//an error on the left.
+
+Left[String, Int]("fred").right flatMap {x => Right[String, Int](x + 1)}
+
+"boom".left[Int] >>= {x => (x + 1).right}
+
+for {
+  e1 <- "event 1 ok".right
+  e2 <- "event 2 failed!".left[String]
+  e3 <- "event 3 failed!".left[String]
+} yield e1 |+| e2 |+| e3
+
+//The first failure rolls up as the final result. How do you get the
+//value out of \/  ? Use the isRight and isLeft methods.
+
+"event 1 ok.".right.isRight
+
+"event 1 ok".right.isLeft
+
+//Validation is another data structure similar to Either (\/)in Scalaz.
+//However, unlike \/ Validation allows you to chain validations. Its
+//not a Monad like Either is not a monad, doesn't stop on a failure.
+(("event 10 ok").success[String] |@| "event 2 failed!".failure[String] |@| "event 3 ok".success[String]) {_ + _ + _}
+
