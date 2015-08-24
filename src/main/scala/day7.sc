@@ -116,5 +116,9 @@ for {
 //Validation is another data structure similar to Either (\/)in Scalaz.
 //However, unlike \/ Validation allows you to chain validations. Its
 //not a Monad like Either is not a monad, doesn't stop on a failure.
-(("event 10 ok").success[String] |@| "event 2 failed!".failure[String] |@| "event 3 ok".success[String]) {_ + _ + _}
+//Its an Applicative Functor. Instead of chaning a result from the first
+//event to the next, Validation validates all events.
+(("event 10 ok").success[String] |@| "event 2 failed!".failure[String] |@| "event 3 failed!".failure[String]) {_ + _ + _}
 
+//Nota how Validation keeps going and reports all failures unlike Either(\/)
+//which cuts the calculation short.
