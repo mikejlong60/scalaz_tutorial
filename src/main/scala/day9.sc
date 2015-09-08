@@ -33,3 +33,24 @@ def freeTree: Tree[Char] =
 val zipper = freeTree.loc
 zipper.getChild(1)// >>= {_.getChild(1)}
 
+
+//Zippers exist for many data structures. In the following example I use them
+//to focus on a sublist of a list.  Scalaz provides a Zipper for Stream. Since
+//Haskell is lazy Haskell's List is really like Scala's Stream.
+Stream(1,2,3,4)
+
+Stream(1,2,3,4).toZipper
+
+Stream(1,2,3,4).toZipper >>= {z:Zipper[Int] => z.next} >>= {z:Zipper[Int] => z.next}
+
+Stream(1,2,3,4).toZipper >>= {z:Zipper[Int] => z.next} >>= {z:Zipper[Int] => z.previous}
+
+val x1 = Stream(1,2,3,4).toZipper >>= {z:Zipper[Int] => z.next} >>= {z:Zipper[Int] => z.next} >>= {z:Zipper[Int] => z.modify {x: Int => 7 + x}.some}
+x1.get.toStream.toList
+
+//You can also use for comprehension syntax on Zippers
+for {
+  z <- Stream(1,2,3,4).toZipper
+  n1 <- z.next
+  n2 <- n1.next
+} yield (n2.modify {x: Int => x + 12})
