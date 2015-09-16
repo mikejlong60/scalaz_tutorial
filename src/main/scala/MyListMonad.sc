@@ -42,3 +42,9 @@ val list2 = MyNestedListFunctor2(List(List(1, 2, 3), List(4, 5, 6)))
 list2 map mult12
 val mult1203 = (a: List[Int]) => a.map(x => x * 1203)
 list2 map mult1203
+
+val list3 = MyNestedListFunctor2(List(List("a","b","c"), List("d","e","f")))
+val appendZ = (a: List[String]) => a.map(x => x + "Z")
+list3 map appendZ
+val list4 = MyNestedListFunctor2(List.empty[List[String]])
+list4 map appendZ

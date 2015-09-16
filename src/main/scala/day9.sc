@@ -54,3 +54,20 @@ for {
   n1 <- z.next
   n2 <- n1.next
 } yield (n2.modify {x: Int => x + 12})
+
+//The Identity monad is a monad that does not embody any computational strategy. It just applied the
+//bound function to its input without any modification. The Identity monad finds its main use in monad
+//transformers: any monad transformer applied to the Identity monad yields a non-transformer version
+//of that monad.
+
+(0: Id[Int])
+
+//|> lets you write the function application at the end of an expression
+1 + 2 + 3 |> {x: Int => x.point[List]}
+1 + 2 + 3 |> {x: Int => x * 6}
+
+//visit takes a partial function and applies it to its arguments.
+1 visit {case x@(2|3) => List(x * 2)}
+3 visit {case x@(2|3) => List(x * 13)}
+
+
