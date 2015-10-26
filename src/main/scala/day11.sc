@@ -34,3 +34,34 @@ val turtlePosition = Lens.lensu[Turtle, Point] (
 val pointX = Lens.lensu[Point, Double] (
   (a, value) => a.copy(x = value), _.x
 )
+
+val turtleX = turtlePosition >=> pointX
+
+val t0 = Turtle(Point(2.0, 3.0), 0.0, Color(255.toByte, 255.toByte, 255.toByte))
+
+turtleX.get(t0)
+turtleX.set(t0, 5.0)
+
+turtleX.mod(_ + 1.0, t0)
+
+val incX = turtleX =>= {_ + 1.0}
+incX(t0)
+
+val turtleHeading = Lens.lensu[Turtle, Double] (
+  (a, value) => a.copy(heading = value), _.heading
+)
+
+val pointY = Lens.lensu[Point, Double] (
+  (a, value) => a.copy(y = value), _.y
+)
+val turtleY = turtlePosition >=> pointY
+
+def forward2(distance: Double) = for {
+  heading <- turtleHeading
+  x <- turtleX += distance * math.cos(heading)
+  y <- turtleY += distance * math.sin(heading)
+} yield (x, y)
+
+forward2(10.0)(t0)
+
+
