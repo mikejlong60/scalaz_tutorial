@@ -83,15 +83,12 @@ def shape[F[_]: Traverse, A](f: F[A]): F[Unit] = f traverse {_ => ((): Id[Unit])
 
 shape(List(1,2,3))
 shape(tree).drawTree
-
 //The next pair of traversals show two important aspects of iterations: mapping and accumulation.
 def decompose[F[_]: Traverse, A](f: F[A]) = (shape(f), contents(f))
 decompose(tree)
-
 //Notice how decompose is looping the tree structure twice. Remember that a product
 //of two applicatives is also an applicative.
 decompose(List(1,2,3,4))
-
 //*** Sequence ***
 //Sequence introduces a method called sequence. It evaluates each action in the sequence from
 //left to right and collects the results.
@@ -104,9 +101,28 @@ List(1.some, 2.some).sequence
 List(1.some, 2.some, none).sequence
 
 //This works for other data structures as well.
+val validationTree: Tree[Validation[String, Int]] = 1.success[String].node(2.success[String].leaf, 3.success[String].leaf)
+validationTree.sequence[({type l[X]=Validation[String, X]})#l, Int]
+val failedTree: Tree[Validation[String, Int]] = 1.success[String].node(2.success[String].leaf, "boom".failure[Int].leaf)
+failedTree.sequence[({type l[X]=Validation[String, X]})#l, Int]
 
+//Consider the special case of a traversal with side effects.  The mapping is independent of the accumulation. The
+//exaple below accumulates elements and imposes a side effect with a function of type a -> m (), modifying thes elements
+//purely and independently of this accumulation with a function of type a -> b.
+//
+//This is like a for looop with a mutable variable accumulating the value outside of the loop.  In Scalaz Traverse
+//adds traverseS which is a specialized version of traverse that uses the State monad.  See is below using collect.
+def collect[F[_]: Traverse, A, S, B](t: F[A])(f: A => B)(g: S => S) = t.traverseS[S, B] { a => State { (s: S) => (g(s), f(a))}}
+val loop = collect(List(1,2,3,4)) {(_: Int) * 2} {(_: Int) + 1}
+loop(0)
 
-
-
-
-
+//The second kind of traversal modifies elements purely but dependent on the state with a binary function of type a -> b -> c,
+//evolving this state independently of the elements using a computation of type m b.
+def label[F[_]: Traverse, A](f: F[A]): F[Int] =
+  (f.traverseS {_ => for {
+    n <- get[Int]
+    x <- put(n + 1)
+  } yield n}) eval 0
+//This function ignores the content of the data structure and replaces it with a number starting with 0.
+label(List(10,2,8))
+label(tree).drawTree
