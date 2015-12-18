@@ -35,6 +35,7 @@ object Fix {
 
 import Fix._
 fix(output('p', fix(done)))
-fix(bell(fix(output('l', fix(done)))))
+fix(bell(fix(output('m', fix(done)))))
+
 
 //stopped at FixE
